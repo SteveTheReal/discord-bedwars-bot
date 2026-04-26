@@ -1,37 +1,82 @@
-# 🏆 Hypixel BedWars Stats Bot
+# 🏆 Hypixel Stats Bot
 
-A Discord bot that instantly fetches and displays BedWars statistics for any Hypixel player — directly in your server.
+A Discord bot that instantly fetches and displays BedWars and Duels statistics for any Hypixel player — directly in your server.
 
 ---
 
 ## Preview
 
-> `/bedwars gamerboy80`
+**BedWars** — `/bedwars Overall gamerboy80`
 
 ```
-╔══════════════════════════════╗
-║  BedWars Stats · gamerboy80  ║
-╠══════════════════════════════╣
-║ ⭐ Level       │ 1,000       ║
-║ 🗡️ Final Kills │ 132,804     ║
-║ 💀 FKDR        │ 24.61       ║
-║ 🏆 Wins        │ 21,450      ║
-║ 📊 WLR         │ 12.38       ║
-║ 🔥 Winstreak   │ 142         ║
-╚══════════════════════════════╝
+╔══════════════════════════════════════╗
+║  BedWars Stats [Overall] · gamerboy80 ║
+╠══════════════════════════════════════╣
+║ ⭐ Level       │ 1,000               ║
+║ 🗡️ Final Kills │ 132,804             ║
+║ 💀 FKDR        │ 24.61               ║
+║ 🏆 Wins        │ 21,450              ║
+║ 📊 WLR         │ 12.38               ║
+║ 🔥 Winstreak   │ 142                 ║
+╚══════════════════════════════════════╝
+```
+
+**Duels** — `/duels UHC gamerboy80`
+
+```
+╔══════════════════════════════════════╗
+║  Duels Stats [UHC] · gamerboy80      ║
+╠══════════════════════════════════════╣
+║ 🏆 Wins        │ 3,241               ║
+║ 💀 Losses      │ 812                 ║
+║ 📊 WLR         │ 3.99                ║
+║ ⚔️ Kills       │ 9,104               ║
+║ 🩸 Deaths      │ 2,190               ║
+║ 💢 KDR         │ 4.16                ║
+║ 🔥 Winstreak   │ 28                  ║
+╚══════════════════════════════════════╝
 ```
 
 ---
 
-## Features
+## Commands
 
-- **`/bedwars <mode> <username>`** — Look up stats for any game mode
-- Modes: **Overall, Solo, Doubles, Threes, Fours, 4v4**
-- Discord prompts you to pick the mode from a dropdown first, then enter the username
-- Displays **Level, Final Kills, FKDR, Wins, WLR, and Winstreak** for the selected mode
-- Clean Discord embed output
-- Handles players with hidden winstreaks gracefully
-- Fast async requests — no lag
+### `/bedwars <mode> <username>`
+Look up BedWars stats for any player. Pick a mode from the dropdown, then enter the username.
+
+| Mode | Description |
+|------|-------------|
+| Overall | Combined stats across all modes |
+| Solo | Solo (1v1v1v1v1v1v1v1) |
+| Doubles | Doubles (2v2v2v2) |
+| Threes | Threes (3v3v3v3) |
+| Fours | Fours (4v4v4v4) |
+| 4v4 | 4v4 |
+
+**Stats shown:** Level, Final Kills, FKDR, Wins, WLR, Winstreak
+
+---
+
+### `/duels <mode> <username>`
+Look up Duels stats for any player. Pick a mode from the dropdown, then enter the username.
+
+| Mode | Description |
+|------|-------------|
+| Overall | Combined stats across all modes |
+| UHC | UHC Duels |
+| OP | OP Duels |
+| Bridge | Bridge Duels |
+| SkyWars | SkyWars Duels |
+| Blitz | Blitz Duels |
+| NoDebuff | NoDebuff Duels |
+| Bow | Bow Duels |
+| Classic | Classic Duels |
+| Combo | Combo Duels |
+| Sumo | Sumo Duels |
+| Boxing | Boxing Duels |
+| MegaWalls | MegaWalls Duels |
+
+**Stats shown:** Wins, Losses, WLR, Kills, Deaths, KDR, Winstreak
 
 ---
 
