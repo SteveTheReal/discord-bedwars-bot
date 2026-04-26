@@ -25,13 +25,10 @@ A Discord bot that instantly fetches and displays BedWars statistics for any Hyp
 
 ## Features
 
-- **`/bedwars overall <username>`** — Overall BedWars stats
-- **`/bedwars solo <username>`** — Solo stats
-- **`/bedwars doubles <username>`** — Doubles stats
-- **`/bedwars threes <username>`** — Threes stats
-- **`/bedwars fours <username>`** — Fours stats
-- **`/bedwars 4v4 <username>`** — 4v4 stats
-- Displays **Level, Final Kills, FKDR, Wins, WLR, and Winstreak** for each mode
+- **`/bedwars <mode> <username>`** — Look up stats for any game mode
+- Modes: **Overall, Solo, Doubles, Threes, Fours, 4v4**
+- Discord prompts you to pick the mode from a dropdown first, then enter the username
+- Displays **Level, Final Kills, FKDR, Wins, WLR, and Winstreak** for the selected mode
 - Clean Discord embed output
 - Handles players with hidden winstreaks gracefully
 - Fast async requests — no lag

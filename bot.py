@@ -7,8 +7,8 @@ from hypixel import get_uuid, get_player, parse_bedwars
 
 load_dotenv()
 
-DISCORD_TOKEN    = os.getenv("DISCORD_TOKEN")
-HYPIXEL_API_KEY  = os.getenv("HYPIXEL_API_KEY")
+DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
+HYPIXEL_API_KEY = os.getenv("HYPIXEL_API_KEY")
 
 if not DISCORD_TOKEN or not HYPIXEL_API_KEY:
     raise RuntimeError("Missing DISCORD_TOKEN or HYPIXEL_API_KEY in .env")
@@ -27,7 +27,26 @@ MODE_LABELS = {
 }
 
 
-async def fetch_and_reply(interaction: discord.Interaction, player: str, mode: str):
+@client.event
+async def on_ready():
+    await tree.sync()
+    print(f"Logged in as {client.user}  |  Slash commands synced.", flush=True)
+
+
+@tree.command(name="bedwars", description="Get BedWars stats for a Hypixel player")
+@app_commands.describe(
+    mode="Game mode to look up",
+    player="Minecraft username",
+)
+@app_commands.choices(mode=[
+    app_commands.Choice(name="Overall",  value="overall"),
+    app_commands.Choice(name="Solo",     value="solo"),
+    app_commands.Choice(name="Doubles",  value="doubles"),
+    app_commands.Choice(name="Threes",   value="threes"),
+    app_commands.Choice(name="Fours",    value="fours"),
+    app_commands.Choice(name="4v4",      value="4v4"),
+])
+async def bedwars(interaction: discord.Interaction, mode: app_commands.Choice[str], player: str):
     await interaction.response.defer()
 
     async with aiohttp.ClientSession() as session:
@@ -46,11 +65,10 @@ async def fetch_and_reply(interaction: discord.Interaction, player: str, mode: s
             )
             return
 
-    stats = parse_bedwars(player_data, mode)
-    label = MODE_LABELS[mode]
+    stats = parse_bedwars(player_data, mode.value)
 
     embed = discord.Embed(
-        title=f"BedWars Stats [{label}]  ·  {player}",
+        title=f"BedWars Stats [{mode.name}]  ·  {player}",
         color=0xFFAA00,
     )
     embed.add_field(name="⭐  Level",       value=str(stats["level"]),         inline=True)
@@ -62,50 +80,6 @@ async def fetch_and_reply(interaction: discord.Interaction, player: str, mode: s
     embed.set_footer(text="Hypixel API")
 
     await interaction.followup.send(embed=embed)
-
-
-class BedwarsGroup(app_commands.Group):
-    def __init__(self):
-        super().__init__(name="bedwars", description="Get BedWars stats for a Hypixel player")
-
-    @app_commands.command(name="overall", description="Overall BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def overall(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "overall")
-
-    @app_commands.command(name="solo", description="Solo BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def solo(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "solo")
-
-    @app_commands.command(name="doubles", description="Doubles BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def doubles(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "doubles")
-
-    @app_commands.command(name="threes", description="Threes BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def threes(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "threes")
-
-    @app_commands.command(name="fours", description="Fours BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def fours(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "fours")
-
-    @app_commands.command(name="4v4", description="4v4 BedWars stats")
-    @app_commands.describe(player="Minecraft username")
-    async def fourvfour(self, interaction: discord.Interaction, player: str):
-        await fetch_and_reply(interaction, player, "4v4")
-
-
-tree.add_command(BedwarsGroup())
-
-
-@client.event
-async def on_ready():
-    await tree.sync()
-    print(f"Logged in as {client.user}  |  Slash commands synced.", flush=True)
 
 
 client.run(DISCORD_TOKEN)
