@@ -9,9 +9,12 @@ load_dotenv()
 
 DISCORD_TOKEN   = os.getenv("DISCORD_TOKEN")
 HYPIXEL_API_KEY = os.getenv("HYPIXEL_API_KEY")
+GUILD_ID        = os.getenv("GUILD_ID")
 
 if not DISCORD_TOKEN or not HYPIXEL_API_KEY:
     raise RuntimeError("Missing DISCORD_TOKEN or HYPIXEL_API_KEY in .env")
+
+MY_GUILD = discord.Object(id=int(GUILD_ID)) if GUILD_ID else None
 
 intents = discord.Intents.default()
 client  = discord.Client(intents=intents)
@@ -45,7 +48,11 @@ DUEL_MODE_LABELS = {
 
 @client.event
 async def on_ready():
-    await tree.sync()
+    if MY_GUILD:
+        tree.copy_global_to(guild=MY_GUILD)
+        await tree.sync(guild=MY_GUILD)
+    else:
+        await tree.sync()
     print(f"Logged in as {client.user}  |  Slash commands synced.", flush=True)
 
 
