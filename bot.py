@@ -4,6 +4,7 @@ import discord
 from discord import app_commands
 from dotenv import load_dotenv
 from hypixel import get_uuid, get_player, parse_bedwars, parse_duels
+from cards import bedwars_card, duels_card
 
 load_dotenv()
 
@@ -89,20 +90,8 @@ async def bedwars(interaction: discord.Interaction, mode: str, player: str):
             return
 
     stats = parse_bedwars(player_data, mode)
-
-    embed = discord.Embed(
-        title=f"BedWars Stats [{MODE_LABELS[mode]}]  ·  {player}",
-        color=0xFFAA00,
-    )
-    embed.add_field(name="⭐  Level",       value=str(stats["level"]),         inline=True)
-    embed.add_field(name="🗡️  Final Kills", value=f"{stats['final_kills']:,}", inline=True)
-    embed.add_field(name="💀  FKDR",        value=stats["fkdr"],               inline=True)
-    embed.add_field(name="🏆  Wins",        value=f"{stats['wins']:,}",        inline=True)
-    embed.add_field(name="📊  WLR",         value=stats["wlr"],                inline=True)
-    embed.add_field(name="🔥  Winstreak",   value=stats["winstreak"],          inline=True)
-    embed.set_footer(text="Hypixel API")
-
-    await interaction.followup.send(embed=embed)
+    buf   = bedwars_card(player, MODE_LABELS[mode], stats)
+    await interaction.followup.send(file=discord.File(buf, filename="bedwars.png"))
 
 
 @tree.command(name="duels", description="Get Duels stats for a Hypixel player")
@@ -145,21 +134,8 @@ async def duels(interaction: discord.Interaction, mode: str, player: str):
             return
 
     stats = parse_duels(player_data, mode)
-
-    embed = discord.Embed(
-        title=f"Duels Stats [{DUEL_MODE_LABELS[mode]}]  ·  {player}",
-        color=0x00AAFF,
-    )
-    embed.add_field(name="🏆  Wins",      value=f"{stats['wins']:,}",   inline=True)
-    embed.add_field(name="💀  Losses",    value=f"{stats['losses']:,}", inline=True)
-    embed.add_field(name="📊  WLR",       value=stats["wlr"],           inline=True)
-    embed.add_field(name="⚔️  Kills",     value=f"{stats['kills']:,}",  inline=True)
-    embed.add_field(name="🩸  Deaths",    value=f"{stats['deaths']:,}", inline=True)
-    embed.add_field(name="💢  KDR",       value=stats["kdr"],           inline=True)
-    embed.add_field(name="🔥  Winstreak", value=stats["winstreak"],     inline=True)
-    embed.set_footer(text="Hypixel API")
-
-    await interaction.followup.send(embed=embed)
+    buf   = duels_card(player, DUEL_MODE_LABELS[mode], stats)
+    await interaction.followup.send(file=discord.File(buf, filename="duels.png"))
 
 
 client.run(DISCORD_TOKEN)
