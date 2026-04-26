@@ -46,7 +46,7 @@ async def on_ready():
     app_commands.Choice(name="Fours",    value="fours"),
     app_commands.Choice(name="4v4",      value="4v4"),
 ])
-async def bedwars(interaction: discord.Interaction, mode: app_commands.Choice[str], player: str):
+async def bedwars(interaction: discord.Interaction, mode: str, player: str):
     await interaction.response.defer()
 
     async with aiohttp.ClientSession() as session:
@@ -65,10 +65,10 @@ async def bedwars(interaction: discord.Interaction, mode: app_commands.Choice[st
             )
             return
 
-    stats = parse_bedwars(player_data, mode.value)
+    stats = parse_bedwars(player_data, mode)
 
     embed = discord.Embed(
-        title=f"BedWars Stats [{mode.name}]  ·  {player}",
+        title=f"BedWars Stats [{MODE_LABELS[mode]}]  ·  {player}",
         color=0xFFAA00,
     )
     embed.add_field(name="⭐  Level",       value=str(stats["level"]),         inline=True)
