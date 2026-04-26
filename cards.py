@@ -26,12 +26,33 @@ CYAN  = (68,  172, 255)
 BW_ACCENT = (255, 163,   0)
 DU_ACCENT = (  0, 158, 255)
 
-_W    = 620
-_PAD  = 12
-_COLS = 3
-_PH   = 80
-_PW   = (_W - _PAD * (_COLS + 1)) // _COLS
-_Y0   = 64
+_W          = 620
+_PAD        = 12
+_COLS       = 3
+_PH         = 80
+_PW         = (_W - _PAD * (_COLS + 1)) // _COLS
+_HEADER_BOT = 66   # bottom edge of header strip
+_Y0         = 84   # first panel — 18px gap below header
+
+
+# BedWars prestige color by level bracket (every 100 levels)
+_PRESTIGE_COLORS = [
+    (170, 170, 170),  # 0-99    Iron       gray
+    (255, 255, 255),  # 100-199 Iron       white
+    (255, 170,   0),  # 200-299 Gold       gold
+    ( 85, 255, 255),  # 300-399 Diamond    cyan
+    ( 85, 255,  85),  # 400-499 Emerald    green
+    ( 85, 170, 255),  # 500-599 Sapphire   blue
+    (255,  85,  85),  # 600-699 Ruby       red
+    (255,  85, 255),  # 700-799 Crystal    pink
+    ( 85, 200, 255),  # 800-899 Opal       light blue
+    (170,  85, 255),  # 900-999 Amethyst   purple
+    (255, 215,   0),  # 1000+   Rainbow    gold (simplified)
+]
+
+
+def _prestige_color(level: int) -> tuple:
+    return _PRESTIGE_COLORS[min(level // 100, len(_PRESTIGE_COLORS) - 1)]
 
 
 def _make(player: str, game: str, mode: str, accent: tuple,
@@ -52,8 +73,8 @@ def _make(player: str, game: str, mode: str, accent: tuple,
     draw.rectangle([0, 0, _W, 5], fill=accent)
 
     # Header strip
-    draw.rectangle([0, 5, _W, _Y0 - 2], fill=(20, 20, 36))
-    draw.text((_W // 2, (_Y0 + 5) // 2),
+    draw.rectangle([0, 5, _W, _HEADER_BOT], fill=(20, 20, 36))
+    draw.text((_W // 2, (_HEADER_BOT + 5) // 2),
               f"{game}  [{mode}]  ·  {player}",
               font=f_title, fill=WHITE, anchor="mm")
 
@@ -84,7 +105,7 @@ def _make(player: str, game: str, mode: str, accent: tuple,
 
 def bedwars_card(player: str, mode: str, stats: dict) -> io.BytesIO:
     rows = [
-        [("Level",       str(stats["level"]),          GOLD),
+        [("Level",       str(stats["level"]),          _prestige_color(stats["level"])),
          ("Final Kills", f"{stats['final_kills']:,}",  GREEN),
          ("FKDR",        stats["fkdr"],                GOLD)],
         [("Wins",        f"{stats['wins']:,}",          GREEN),
