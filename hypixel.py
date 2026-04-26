@@ -39,6 +39,23 @@ def _ratio(a: int, b: int) -> str:
     return f"{a / b:.2f}"
 
 
+DUEL_MODE_PREFIXES = {
+    "overall":  "",
+    "uhc":      "UHC_DUEL_",
+    "op":       "OP_DUEL_",
+    "bridge":   "BRIDGE_DUEL_",
+    "skywars":  "SW_DUEL_",
+    "blitz":    "BLITZ_DUEL_",
+    "nodebuff": "NO_DEBUFF_DUEL_",
+    "bow":      "BOW_DUEL_",
+    "classic":  "CLASSIC_DUEL_",
+    "combo":    "COMBO_DUEL_",
+    "sumo":     "SUMO_DUEL_",
+    "boxing":   "BOXING_DUEL_",
+    "megawalls": "MW_DUEL_",
+}
+
+
 def parse_bedwars(player: dict, mode: str = "overall") -> dict:
     bw = player.get("stats", {}).get("Bedwars", {})
     achievements = player.get("achievements", {})
@@ -59,4 +76,26 @@ def parse_bedwars(player: dict, mode: str = "overall") -> dict:
         "losses":       losses,
         "wlr":          _ratio(wins, losses),
         "winstreak":    f"{winstreak:,}" if winstreak is not None else "Hidden",
+    }
+
+
+def parse_duels(player: dict, mode: str = "overall") -> dict:
+    duels  = player.get("stats", {}).get("Duels", {})
+    prefix = DUEL_MODE_PREFIXES.get(mode, "")
+
+    wins      = duels.get(f"{prefix}wins", 0)
+    losses    = duels.get(f"{prefix}losses", 0)
+    kills     = duels.get(f"{prefix}kills", 0)
+    deaths    = duels.get(f"{prefix}deaths", 0)
+    ws_key    = "current_winstreak" if mode == "overall" else f"{prefix}current_winstreak"
+    winstreak = duels.get(ws_key)
+
+    return {
+        "wins":      wins,
+        "losses":    losses,
+        "wlr":       _ratio(wins, losses),
+        "kills":     kills,
+        "deaths":    deaths,
+        "kdr":       _ratio(kills, deaths),
+        "winstreak": f"{winstreak:,}" if winstreak is not None else "Hidden",
     }
